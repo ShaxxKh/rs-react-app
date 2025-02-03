@@ -39,7 +39,7 @@ const fetchWithErrorHandling = async (
 export const fetchPeople = async (
   name?: string
 ): Promise<FetchPeopleResponse> => {
-  const url = `${process.env.API_URL}/?search=${name}`;
+  const url = `${import.meta.env.VITE_APP_API_URL}/?search=${name}`;
   const res = await fetchWithErrorHandling(url);
 
   return res;
