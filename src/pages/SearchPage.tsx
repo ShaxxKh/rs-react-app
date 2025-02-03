@@ -57,6 +57,10 @@ class SearchPage extends React.Component<object, AppState> {
   }
 
   render() {
+    if (this.state.error) {
+      throw this.state.error;
+    }
+
     return (
       <div className="search_page">
         <Controls
@@ -67,7 +71,7 @@ class SearchPage extends React.Component<object, AppState> {
         {this.state.loading ? (
           <Spinner />
         ) : (
-          <Results results={this.state.results} error={this.state.error} />
+          <Results results={this.state.results} />
         )}
         <button onClick={this.handleErrorButtonClick}>Error Button</button>
       </div>

@@ -1,19 +1,13 @@
 import { Component } from 'react';
 import { Person } from '../api/users.api';
-import Fallback from './Fallback';
 
 interface ResultsProps {
   results: Person[];
-  error: Error | null;
 }
 
 class Results extends Component<ResultsProps> {
   render() {
-    const { results, error } = this.props;
-
-    if (error) {
-      return <Fallback error={error} />;
-    }
+    const { results } = this.props;
 
     return (
       <div>
