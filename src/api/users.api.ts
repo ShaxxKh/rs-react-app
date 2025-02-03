@@ -36,10 +36,12 @@ const fetchWithErrorHandling = async (
   return response.json();
 };
 
+const API_URL = 'https://swapi.dev/api/people';
+
 export const fetchPeople = async (
   name?: string
 ): Promise<FetchPeopleResponse> => {
-  const url = `${import.meta.env.VITE_APP_API_URL}/?search=${name}`;
+  const url = `${API_URL}/?search=${name}`;
   const res = await fetchWithErrorHandling(url);
 
   return res;
