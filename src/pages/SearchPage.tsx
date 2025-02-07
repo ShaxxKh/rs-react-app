@@ -1,82 +1,59 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import Results from '../components/Results';
 import { fetchPeople, Person } from '../api/users.api';
 import Controls from '../components/Controls';
 import CustomError from '../common/errors/CustomError';
 import Spinner from '../components/Spinner/Spinner';
 
-type AppState = {
-  searchTerm: string;
-  results: Person[];
-  error: Error | null;
-  loading: boolean;
-};
+export default function SearchPage() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState<Person[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(false);
 
-class SearchPage extends React.Component<object, AppState> {
-  constructor(props: object) {
-    super(props);
-    this.state = {
-      searchTerm: localStorage.getItem('searchTerm') || '',
-      results: [],
-      error: null,
-      loading: false,
-    };
-
-    this.handleSearchClick = this.handleSearchClick.bind(this);
-    this.setSearchTerm = this.setSearchTerm.bind(this);
-    this.getPeopleAndUpdateResults = this.getPeopleAndUpdateResults.bind(this);
-    this.handleErrorButtonClick = this.handleErrorButtonClick.bind(this);
-  }
-
-  async getPeopleAndUpdateResults(name?: string): Promise<void> {
+  async function getPeopleAndUpdateResults(name?: string): Promise<void> {
     try {
-      this.setState({ loading: true });
+      setLoading(true);
       const { results } = await fetchPeople(name);
-      this.setState({ results, error: null, loading: false });
+      setLoading(false);
+      setResults(results);
+      setError(null);
     } catch (error) {
-      this.setState({ error: error as Error });
+      setError(error as Error);
       throw error;
     }
   }
 
-  async handleSearchClick(): Promise<void> {
-    await this.getPeopleAndUpdateResults(this.state.searchTerm);
+  async function handleSearchClick(): Promise<void> {
+    await getPeopleAndUpdateResults(searchTerm);
   }
 
-  handleErrorButtonClick() {
-    this.setState({ error: new CustomError('Error Button Clicked') });
+  function handleErrorButtonClick() {
+    setError(new CustomError('Error Button Clicked'));
   }
 
-  setSearchTerm(searchTerm: string) {
-    this.setState({ searchTerm });
+  function setSearchTermToLocalStorage(searchTerm: string) {
+    setSearchTerm(searchTerm);
     localStorage.setItem('searchTerm', searchTerm);
   }
 
-  async componentDidMount(): Promise<void> {
-    await this.getPeopleAndUpdateResults(this.state.searchTerm);
+  useEffect(() => {
+    getPeopleAndUpdateResults(searchTerm);
+  }, [searchTerm]);
+
+  if (error) {
+    throw error;
   }
 
-  render() {
-    if (this.state.error) {
-      throw this.state.error;
-    }
-
-    return (
-      <div className="search_page">
-        <Controls
-          searchTerm={this.state.searchTerm}
-          handleSearchClick={this.handleSearchClick}
-          setSearchTerm={this.setSearchTerm}
-        />
-        {this.state.loading ? (
-          <Spinner />
-        ) : (
-          <Results results={this.state.results} />
-        )}
-        <button onClick={this.handleErrorButtonClick}>Error Button</button>
-      </div>
-    );
-  }
+  return (
+    <div className="search_page">
+      <Controls
+        searchTerm={searchTerm}
+        handleSearchClick={handleSearchClick}
+        setSearchTerm={setSearchTermToLocalStorage}
+      />
+      {loading ? <Spinner /> : <Results results={results} />}
+      <button onClick={handleErrorButtonClick}>Error Button</button>
+    </div>
+  );
 }
-
-export default SearchPage;
