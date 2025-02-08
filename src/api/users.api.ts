@@ -8,7 +8,10 @@ export type Person = {
   gender: string;
   eye_color: string;
   hair_color: string;
+  url: string;
 };
+
+export type PersonWithoutUrl = Omit<Person, 'url'>;
 
 export type FetchPeopleResponse = {
   count: number;
@@ -17,9 +20,7 @@ export type FetchPeopleResponse = {
   results: Person[];
 };
 
-const fetchWithErrorHandling = async (
-  url: string
-): Promise<FetchPeopleResponse> => {
+const fetchWithErrorHandling = async <T>(url: string): Promise<T> => {
   const response = await fetch(url);
   const { status, ok } = response;
 
@@ -39,10 +40,24 @@ const fetchWithErrorHandling = async (
 const API_URL = 'https://swapi.dev/api/people';
 
 export const fetchPeople = async (
-  name?: string
+  name?: string,
+  page?: number
 ): Promise<FetchPeopleResponse> => {
-  const url = `${API_URL}/?search=${name}`;
-  const res = await fetchWithErrorHandling(url);
+  const params = new URLSearchParams();
+  params.set('search', name ?? '');
+  params.set('page', String(page ?? ''));
+
+  const url = `${API_URL}/?${params.toString()}`;
+  const res = await fetchWithErrorHandling<FetchPeopleResponse>(url);
+
+  return res;
+};
+
+export const fetchPersonById = async (
+  id: string
+): Promise<PersonWithoutUrl> => {
+  const url = `${API_URL}/${id}`;
+  const res = await fetchWithErrorHandling<PersonWithoutUrl>(url);
 
   return res;
 };
