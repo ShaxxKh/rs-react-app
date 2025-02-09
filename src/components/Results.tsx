@@ -46,26 +46,33 @@ export default function Results(props: ResultsProps) {
 
   return (
     <div style={{ display: 'flex' }}>
-      <div>
-        <h2>Results</h2>
-        {isFetchPeopleLoading ? <Spinner /> : <CardList results={results} />}
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage <= 1}
-        >
-          Previous
-        </button>
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={!isNextPage}
-        >
-          Next
-        </button>
-      </div>
+      {isFetchPeopleLoading ? (
+        <Spinner />
+      ) : (
+        <div>
+          <h2>Results</h2>
+          <CardList results={results} />
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage <= 1}
+          >
+            Previous
+          </button>
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={!isNextPage}
+          >
+            Next
+          </button>
+        </div>
+      )}
+
       {isFetchPersonByIdLoading ? (
         <Spinner />
       ) : (
-        currentCard && <DetailedCard data={currentCard} />
+        currentCard && (
+          <DetailedCard data={currentCard} setCurrentCard={setCurrentCard} />
+        )
       )}
     </div>
   );
