@@ -1,6 +1,18 @@
+import { useSearchParams } from 'react-router';
 import { PersonWithoutUrl } from '../api/users.api';
 
-export default function DetailedCard(props: { data: PersonWithoutUrl }) {
+export default function DetailedCard(props: {
+  data: PersonWithoutUrl;
+  setCurrentCard: (currentCard: null) => void;
+}) {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleCloseButtonClick = () => {
+    searchParams.set('id', '');
+    setSearchParams(searchParams);
+    props.setCurrentCard(null);
+  };
+
   return (
     <div>
       <h2>Detailed Card</h2>
@@ -13,6 +25,7 @@ export default function DetailedCard(props: { data: PersonWithoutUrl }) {
           );
         })}
       </ul>
+      <button onClick={handleCloseButtonClick}>Close</button>
     </div>
   );
 }
