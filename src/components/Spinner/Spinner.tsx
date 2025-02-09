@@ -13,6 +13,7 @@ export default function Spinner() {
         }}
         role="status"
         aria-label="loading"
+        data-testid="spinner"
       ></div>
       <span className="spinner-text">Loading...</span>
     </>
