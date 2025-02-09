@@ -6,9 +6,15 @@
       "@/*": ["src/*"]
     },
     "typeRoots": ["./node_modules/@types", "./types"],
-    "types": ["node", "jest", "@testing-library/jest-dom"],
-    "esModuleInterop": true
+    "types": ["node", "jest"],
+    "esModuleInterop": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   },
+
   "include": ["src", "types"],
-  "exclude": ["node_modules", "build"]
+  "exclude": ["node_modules", "build"],
+  "buildOptions": {
+    "outDir": "build"
+  }
 }
