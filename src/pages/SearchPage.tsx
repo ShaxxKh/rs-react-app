@@ -3,7 +3,6 @@ import Results from '../components/Results';
 import { fetchPeople, Person } from '../api/users.api';
 import Controls from '../components/Controls';
 // import CustomError from '../common/errors/CustomError';
-import Spinner from '../components/Spinner/Spinner';
 import { useSearchParams } from 'react-router';
 
 export default function SearchPage() {
@@ -12,7 +11,7 @@ export default function SearchPage() {
   );
   const [results, setResults] = useState<Person[]>([]);
   // const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [isFetchPeopleLoading, setIsFetchPeopleLoading] = useState(false);
   const [isNextPage, setIsNextPage] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get('page')) || 1;
@@ -22,7 +21,7 @@ export default function SearchPage() {
     page?: number
   ): Promise<void> {
     try {
-      setLoading(true);
+      setIsFetchPeopleLoading(true);
       const { results, next } = await fetchPeople(name, page);
 
       setResults(results);
@@ -35,7 +34,7 @@ export default function SearchPage() {
 
       throw error;
     } finally {
-      setLoading(false);
+      setIsFetchPeopleLoading(false);
     }
   }
 
@@ -70,16 +69,13 @@ export default function SearchPage() {
         }
         setSearchTerm={setSearchTermToLocalStorage}
       />
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Results
-          results={results}
-          currentPage={page}
-          isNextPage={isNextPage}
-          onPageChange={handlePageChange}
-        />
-      )}
+      <Results
+        results={results}
+        currentPage={page}
+        isNextPage={isNextPage}
+        isFetchPeopleLoading={isFetchPeopleLoading}
+        onPageChange={handlePageChange}
+      />
       <button>Error Button</button>
     </div>
   );

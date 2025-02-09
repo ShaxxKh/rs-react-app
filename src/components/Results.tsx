@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { fetchPersonById, Person, PersonWithoutUrl } from '../api/users.api';
-import Card from './Card';
-import { Outlet, useSearchParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 import DetailedCard from './DetailedCard';
 import Spinner from './Spinner/Spinner';
+import CardList from './CardList';
 
 interface ResultsProps {
   results: Person[];
   currentPage: number;
   isNextPage: boolean;
+  isFetchPeopleLoading: boolean;
   onPageChange: (page: number) => void;
 }
 
@@ -17,7 +18,13 @@ export default function Results(props: ResultsProps) {
   const [isFetchPersonByIdLoading, setIsFetchPersonByIdLoading] =
     useState(false);
   const [searchParams] = useSearchParams();
-  const { results, currentPage, isNextPage, onPageChange } = props;
+  const {
+    results,
+    currentPage,
+    isNextPage,
+    isFetchPeopleLoading,
+    onPageChange,
+  } = props;
   const id = searchParams.get('id');
 
   useEffect(() => {
@@ -41,11 +48,7 @@ export default function Results(props: ResultsProps) {
     <div style={{ display: 'flex' }}>
       <div>
         <h2>Results</h2>
-        <ul style={{ textAlign: 'start' }}>
-          {results.map((result, index) => (
-            <Card key={index} data={result} />
-          ))}
-        </ul>
+        {isFetchPeopleLoading ? <Spinner /> : <CardList results={results} />}
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
@@ -59,7 +62,6 @@ export default function Results(props: ResultsProps) {
           Next
         </button>
       </div>
-      <Outlet />
       {isFetchPersonByIdLoading ? (
         <Spinner />
       ) : (
