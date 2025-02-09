@@ -4,11 +4,10 @@ import { fetchPeople, Person } from '../api/users.api';
 import Controls from '../components/Controls';
 // import CustomError from '../common/errors/CustomError';
 import { useSearchParams } from 'react-router';
+import useSearchTermFromLocalStorage from '../common/hooks/useSearchTermFromLocalStorage';
 
 export default function SearchPage() {
-  const [searchTerm, setSearchTerm] = useState(
-    localStorage.getItem('searchTerm') ?? ''
-  );
+  const { searchTerm, setSearchTerm } = useSearchTermFromLocalStorage();
   const [results, setResults] = useState<Person[]>([]);
   // const [error, setError] = useState<Error | null>(null);
   const [isFetchPeopleLoading, setIsFetchPeopleLoading] = useState(false);
@@ -42,11 +41,6 @@ export default function SearchPage() {
   //   setError(new CustomError('Error Button Clicked'));
   // }
 
-  function setSearchTermToLocalStorage(searchTerm: string) {
-    setSearchTerm(searchTerm);
-    localStorage.setItem('searchTerm', searchTerm);
-  }
-
   function handlePageChange(newPage: number) {
     searchParams.set('page', newPage.toString());
     setSearchParams(searchParams);
@@ -54,7 +48,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     getPeopleAndUpdateResults(searchTerm, page);
-  }, [searchTerm, page]);
+  }, [page]);
 
   // if (error) {
   //   throw error;
@@ -67,7 +61,7 @@ export default function SearchPage() {
         handleSearchClick={async () =>
           await getPeopleAndUpdateResults(searchTerm)
         }
-        setSearchTerm={setSearchTermToLocalStorage}
+        setSearchTerm={setSearchTerm}
       />
       <Results
         results={results}
