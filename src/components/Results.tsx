@@ -66,14 +66,11 @@ export default function Results(props: ResultsProps) {
           </button>
         </div>
       )}
-
-      {isFetchPersonByIdLoading ? (
-        <Spinner />
-      ) : (
-        currentCard && (
-          <DetailedCard data={currentCard} setCurrentCard={setCurrentCard} />
-        )
-      )}
+      <DetailedCard
+        data={currentCard}
+        isFetchPersonByIdLoading={isFetchPersonByIdLoading}
+        setCurrentCard={setCurrentCard}
+      />
     </div>
   );
 }

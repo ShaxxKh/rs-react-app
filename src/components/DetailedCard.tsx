@@ -1,8 +1,10 @@
 import { useSearchParams } from 'react-router';
 import { PersonWithoutUrl } from '../api/users.api';
+import Spinner from './Spinner/Spinner';
 
 export default function DetailedCard(props: {
   data: PersonWithoutUrl;
+  isFetchPersonByIdLoading: boolean;
   setCurrentCard: (currentCard: null) => void;
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -13,7 +15,11 @@ export default function DetailedCard(props: {
     props.setCurrentCard(null);
   };
 
-  return (
+  if (!props.data) {
+    return;
+  }
+
+  return !props.isFetchPersonByIdLoading ? (
     <div>
       <h2>Detailed Card</h2>
       <ul style={{ listStyleType: 'none', textAlign: 'start' }}>
@@ -27,5 +33,7 @@ export default function DetailedCard(props: {
       </ul>
       <button onClick={handleCloseButtonClick}>Close</button>
     </div>
+  ) : (
+    <Spinner />
   );
 }
