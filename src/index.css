@@ -3,14 +3,33 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  color-scheme: dark light;
+  width: 100%;
+  height: 100%;
+  align-content: center;
+
+  &.dark {
+    background-color: #242424;
+    color: rgba(255, 255, 255, 0.87);
+    color-scheme: dark;
+  }
+
+  &.light {
+    color-scheme: light;
+    background-color: #ffffff;
+    color: black;
+    button {
+      border-color: black;
+      background-color: #f9f9f9;
+    }
+  }
 }
 
 a {
@@ -27,7 +46,6 @@ body {
   display: flex;
   place-items: center;
   min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -55,7 +73,7 @@ button:focus-visible {
 }
 
 @media (prefers-color-scheme: light) {
-  :root {
+  .app {
     color: #213547;
     background-color: #ffffff;
   }

@@ -45,7 +45,7 @@ export default function Results(props: ResultsProps) {
   }, [id]);
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
       {isFetchPeopleLoading ? (
         <Spinner />
       ) : (
