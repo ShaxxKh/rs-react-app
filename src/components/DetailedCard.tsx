@@ -15,7 +15,7 @@ export default function DetailedCard(props: {
     props.setCurrentCard(null);
   };
 
-  if (!props.data) {
+  if (!props.data && !props.isFetchPersonByIdLoading) {
     return;
   }
 
