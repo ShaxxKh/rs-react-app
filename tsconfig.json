@@ -1,7 +1,20 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "types": ["node", "jest"],
+    "esModuleInterop": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  },
+
+  "include": ["src", "types"],
+  "exclude": ["node_modules", "build"],
+  "buildOptions": {
+    "outDir": "build"
+  }
 }
