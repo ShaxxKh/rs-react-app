@@ -1,9 +1,15 @@
-import { useEffect, useState } from 'react';
-import { fetchPersonById, Person, PersonWithoutUrl } from '../api/users.api';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSearchParams } from 'react-router';
+import { Person, useGetPersonByIdQuery } from '../api/users.api';
 import DetailedCard from './DetailedCard';
 import Spinner from './Spinner/Spinner';
 import CardList from './CardList';
+import {
+  resetCurrentCard,
+  setCurrentCard,
+  setIsFetchPersonByIdLoading,
+} from '../features/people/peopleSlice';
 
 interface ResultsProps {
   results: Person[];
@@ -14,9 +20,7 @@ interface ResultsProps {
 }
 
 export default function Results(props: ResultsProps) {
-  const [currentCard, setCurrentCard] = useState<PersonWithoutUrl | null>(null);
-  const [isFetchPersonByIdLoading, setIsFetchPersonByIdLoading] =
-    useState(false);
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const {
     results,
@@ -27,22 +31,38 @@ export default function Results(props: ResultsProps) {
   } = props;
   const id = searchParams.get('id');
 
+  const {
+    data: currentCard,
+    error,
+    isLoading,
+    isFetching,
+  } = useGetPersonByIdQuery(id, {
+    skip: !id,
+    selectFromResult: (response) => {
+      if (response.data) {
+        const { name, birth_year, gender, hair_color, eye_color } =
+          response.data;
+        return {
+          ...response,
+          data: { name, birth_year, gender, hair_color, eye_color },
+        };
+      }
+
+      return response;
+    },
+  });
+
   useEffect(() => {
     if (id) {
-      setIsFetchPersonByIdLoading(true);
-      fetchPersonById(id)
-        .then(({ name, birth_year, gender, eye_color, hair_color }) => {
-          setCurrentCard({
-            name,
-            birth_year,
-            gender,
-            eye_color,
-            hair_color,
-          });
-        })
-        .finally(() => setIsFetchPersonByIdLoading(false));
+      if (currentCard && !error) {
+        dispatch(setCurrentCard(currentCard));
+      }
+
+      dispatch(setIsFetchPersonByIdLoading(isLoading || isFetching));
+    } else {
+      dispatch(resetCurrentCard());
     }
-  }, [id]);
+  }, [id, dispatch, currentCard, error, isLoading, isFetching]);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -66,11 +86,7 @@ export default function Results(props: ResultsProps) {
           </button>
         </div>
       )}
-      <DetailedCard
-        data={currentCard}
-        isFetchPersonByIdLoading={isFetchPersonByIdLoading}
-        setCurrentCard={setCurrentCard}
-      />
+      <DetailedCard />
     </div>
   );
 }

@@ -1,29 +1,38 @@
 import { useSearchParams } from 'react-router';
-import { PersonWithoutUrl } from '../api/users.api';
+import { useDispatch, useSelector } from 'react-redux';
 import Spinner from './Spinner/Spinner';
+import {
+  resetCurrentCard,
+  selectCurrentCard,
+  selectIsFetchPersonByIdLoading,
+} from '../features/people/peopleSlice';
+import { RootState } from '@/app/store';
 
-export default function DetailedCard(props: {
-  data: PersonWithoutUrl;
-  isFetchPersonByIdLoading: boolean;
-  setCurrentCard: (currentCard: null) => void;
-}) {
+export default function DetailedCard() {
+  const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const personData = useSelector((state: RootState) =>
+    selectCurrentCard(state)
+  );
+  const isFetchPersonByIdLoading = useSelector((state: RootState) =>
+    selectIsFetchPersonByIdLoading(state)
+  );
 
   const handleCloseButtonClick = () => {
     searchParams.set('id', '');
     setSearchParams(searchParams);
-    props.setCurrentCard(null);
+    dispatch(resetCurrentCard());
   };
 
-  if (!props.data && !props.isFetchPersonByIdLoading) {
+  if (!personData && !isFetchPersonByIdLoading) {
     return;
   }
 
-  return !props.isFetchPersonByIdLoading ? (
+  return !isFetchPersonByIdLoading ? (
     <div>
       <h2>Detailed Card</h2>
       <ul style={{ listStyleType: 'none', textAlign: 'start' }}>
-        {Object.entries(props.data).map((property, index) => {
+        {Object.entries(personData).map((property, index) => {
           return (
             <li key={index}>
               {property[0]}: {property[1]}
