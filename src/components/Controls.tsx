@@ -1,19 +1,23 @@
 import ThemeContext, { ThemeType } from './../context/ThemeContext';
 import React, { useContext } from 'react';
 import RadioButton from './RadioButton';
+import useSearchTermFromLocalStorage from '../common/hooks/useSearchTermFromLocalStorage';
+import { useDispatch } from 'react-redux';
+import { setSearchTerm } from '../features/people/peopleSlice';
 
-interface ControlsProps {
-  handleSearchClick: () => void;
-  setSearchTerm: (searchTerm: string) => void;
-  searchTerm: string;
-}
-
-export default function Controls(props: ControlsProps) {
+export default function Controls() {
+  const dispatch = useDispatch();
+  const { searchTerm, setSearchTermToLocalState } =
+    useSearchTermFromLocalStorage();
   const { theme, setTheme } = useContext(ThemeContext);
   const isDark = theme === 'dark';
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    props.setSearchTerm(event.target.value);
+    setSearchTermToLocalState(event.target.value);
+  };
+
+  const handleSearchClick = () => {
+    dispatch(setSearchTerm(searchTerm));
   };
 
   const handleRadioButtonClick = (
@@ -26,11 +30,11 @@ export default function Controls(props: ControlsProps) {
     <div>
       <input
         type="text"
-        value={props.searchTerm}
+        value={searchTerm}
         onChange={handleSearchChange}
         placeholder="Search..."
       />
-      <button onClick={props.handleSearchClick}>Search</button>
+      <button onClick={handleSearchClick}>Search</button>
       <div onChange={handleRadioButtonClick}>
         <RadioButton isChecked={isDark} value="dark" />
         <RadioButton isChecked={!isDark} value="light" />

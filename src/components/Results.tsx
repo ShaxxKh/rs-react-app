@@ -1,35 +1,31 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router';
-import { Person, useGetPersonByIdQuery } from '../api/users.api';
+import { useGetPersonByIdQuery } from '../api/users.api';
 import DetailedCard from './DetailedCard';
 import Spinner from './Spinner/Spinner';
 import CardList from './CardList';
 import {
   resetCurrentCard,
+  selectIsFetchPeopleLoading,
+  selectIsNextPage,
+  selectResults,
   setCurrentCard,
   setIsFetchPersonByIdLoading,
 } from '../features/people/peopleSlice';
+import { RootState } from '@/app/store';
 
-interface ResultsProps {
-  results: Person[];
-  currentPage: number;
-  isNextPage: boolean;
-  isFetchPeopleLoading: boolean;
-  onPageChange: (page: number) => void;
-}
-
-export default function Results(props: ResultsProps) {
+export default function Results() {
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
-  const {
-    results,
-    currentPage,
-    isNextPage,
-    isFetchPeopleLoading,
-    onPageChange,
-  } = props;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const results = useSelector((state: RootState) => selectResults(state));
+  const isNextPage = useSelector((state: RootState) => selectIsNextPage(state));
+  const isFetchPeopleLoading = useSelector((state: RootState) =>
+    selectIsFetchPeopleLoading(state)
+  );
+  // const { currentPage } = props;
   const id = searchParams.get('id');
+  const currentPage = Number(searchParams.get('page')) || 1;
 
   const {
     data: currentCard,
@@ -64,6 +60,11 @@ export default function Results(props: ResultsProps) {
     }
   }, [id, dispatch, currentCard, error, isLoading, isFetching]);
 
+  const handlePageChange = (newPage: number) => {
+    searchParams.set('page', newPage.toString());
+    setSearchParams(searchParams);
+  };
+
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       {isFetchPeopleLoading ? (
@@ -73,13 +74,13 @@ export default function Results(props: ResultsProps) {
           <h2>Results</h2>
           <CardList results={results} />
           <button
-            onClick={() => onPageChange(currentPage - 1)}
+            onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage <= 1}
           >
             Previous
           </button>
           <button
-            onClick={() => onPageChange(currentPage + 1)}
+            onClick={() => handlePageChange(currentPage + 1)}
             disabled={!isNextPage}
           >
             Next

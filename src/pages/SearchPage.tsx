@@ -1,54 +1,45 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Results from '../components/Results';
-import { fetchPeople, Person } from '../api/users.api';
+import { useGetPeopleQuery } from '../api/users.api';
 import Controls from '../components/Controls';
 // import CustomError from '../common/errors/CustomError';
 import { useSearchParams } from 'react-router';
-import useSearchTermFromLocalStorage from '../common/hooks/useSearchTermFromLocalStorage';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectSearchTerm,
+  setIsFetchPeopleLoading,
+  setIsNextPage,
+  setResults,
+} from '../features/people/peopleSlice';
+import { RootState } from '@/app/store';
 
 export default function SearchPage() {
-  const { searchTerm, setSearchTerm } = useSearchTermFromLocalStorage();
-  const [results, setResults] = useState<Person[]>([]);
   // const [error, setError] = useState<Error | null>(null);
-  const [isFetchPeopleLoading, setIsFetchPeopleLoading] = useState(false);
-  const [isNextPage, setIsNextPage] = useState(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = Number(searchParams.get('page')) || 1;
+  const dispatch = useDispatch();
+  const searchTerm = useSelector((state: RootState) => selectSearchTerm(state));
+  const [searchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
 
-  async function getPeopleAndUpdateResults(
-    name?: string,
-    page?: number
-  ): Promise<void> {
-    try {
-      setIsFetchPeopleLoading(true);
-      const { results, next } = await fetchPeople(name, page);
+  const { data, isLoading, isFetching } = useGetPeopleQuery({
+    search: searchTerm,
+    page: currentPage,
+  });
 
-      setResults(results);
-      setIsNextPage(Boolean(next));
-      // setError(null);
-    } catch (error) {
-      if (error instanceof Error) {
-        // setError(error);
-      }
-
-      throw error;
-    } finally {
-      setIsFetchPeopleLoading(false);
+  useEffect(() => {
+    if (data?.results) {
+      const { results, next } = data;
+      dispatch(setResults(results));
+      dispatch(setIsNextPage(Boolean(next)));
     }
-  }
+  }, [data, dispatch]);
+
+  useEffect(() => {
+    dispatch(setIsFetchPeopleLoading(isLoading || isFetching));
+  }, [isLoading, isFetching, dispatch]);
 
   // function handleErrorButtonClick() {
   //   setError(new CustomError('Error Button Clicked'));
   // }
-
-  function handlePageChange(newPage: number) {
-    searchParams.set('page', newPage.toString());
-    setSearchParams(searchParams);
-  }
-
-  useEffect(() => {
-    getPeopleAndUpdateResults(searchTerm, page);
-  }, [page]);
 
   // if (error) {
   //   throw error;
@@ -56,20 +47,8 @@ export default function SearchPage() {
 
   return (
     <div className="search_page">
-      <Controls
-        searchTerm={searchTerm}
-        handleSearchClick={async () =>
-          await getPeopleAndUpdateResults(searchTerm)
-        }
-        setSearchTerm={setSearchTerm}
-      />
-      <Results
-        results={results}
-        currentPage={page}
-        isNextPage={isNextPage}
-        isFetchPeopleLoading={isFetchPeopleLoading}
-        onPageChange={handlePageChange}
-      />
+      <Controls />
+      <Results />
       <button>Error Button</button>
     </div>
   );
