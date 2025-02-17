@@ -67,10 +67,13 @@ export const peopleApi = createApi({
   reducerPath: 'peopleApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
   endpoints: (builder) => ({
-    getPeople: builder.query({
-      query: (name?: string, page?: number) => ({
+    getPeople: builder.query<
+      FetchPeopleResponse,
+      { search?: string; page?: number }
+    >({
+      query: ({ search, page }) => ({
         url: '/',
-        params: { name, page },
+        params: { search, page },
       }),
     }),
     getPersonById: builder.query<PersonWithoutUrl, string>({
