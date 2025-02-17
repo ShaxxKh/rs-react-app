@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import Results from '../components/Results';
-import { useGetPeopleQuery } from '../api/users.api';
+import { Person, useGetPeopleQuery } from '../api/users.api';
 import Controls from '../components/Controls';
-// import CustomError from '../common/errors/CustomError';
 import { useSearchParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -14,11 +13,10 @@ import {
 import { RootState } from '@/app/store';
 
 export default function SearchPage() {
-  // const [error, setError] = useState<Error | null>(null);
   const dispatch = useDispatch();
   const searchTerm = useSelector((state: RootState) => selectSearchTerm(state));
   const [searchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const currentPage = Number(searchParams.get('page')) || undefined;
 
   const { data, isLoading, isFetching } = useGetPeopleQuery({
     search: searchTerm,
@@ -37,19 +35,17 @@ export default function SearchPage() {
     dispatch(setIsFetchPeopleLoading(isLoading || isFetching));
   }, [isLoading, isFetching, dispatch]);
 
-  // function handleErrorButtonClick() {
-  //   setError(new CustomError('Error Button Clicked'));
-  // }
-
-  // if (error) {
-  //   throw error;
-  // }
-
   return (
     <div className="search_page">
       <Controls />
       <Results />
-      <button>Error Button</button>
+      <button
+        onClick={() => {
+          dispatch(setResults(undefined as Person[]));
+        }}
+      >
+        Error Button
+      </button>
     </div>
   );
 }
