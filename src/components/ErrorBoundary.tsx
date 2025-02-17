@@ -6,7 +6,6 @@ type ErrorBoundaryProps = {
 };
 
 type ErrorBoundaryState = {
-  hasError: boolean;
   error: Error | null;
 };
 
@@ -16,20 +15,21 @@ class ErrorBoundary extends React.Component<
 > {
   constructor(props: ErrorBoundaryProps) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = {
+      error: null,
+    };
   }
 
   static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
+    return { error };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    this.setState({ hasError: true, error });
     console.error('ErrorBoundary caught an error', error, errorInfo);
   }
 
   render() {
-    if (this.state.hasError && this.state.error) {
+    if (this.state.error) {
       return <Fallback error={this.state.error} />;
     }
     return this.props.children;
