@@ -2,6 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 import { FetchPeopleResponse, PersonWithoutUrl } from '../../api/users.api';
 import { RootState } from '@/app/store';
 
+export type SelectedPeople = {
+  [key: number]: { isSelected: boolean; data: PersonWithoutUrl };
+};
+
 export interface PeopleState {
   currentCard: PersonWithoutUrl | null;
   isFetchPersonByIdLoading: boolean;
@@ -9,6 +13,7 @@ export interface PeopleState {
   searchTerm: string;
   isFetchPeopleLoading: boolean;
   isNextPage: boolean;
+  selectedPeople: SelectedPeople;
 }
 
 const initialState: PeopleState = {
@@ -18,6 +23,7 @@ const initialState: PeopleState = {
   searchTerm: '',
   isFetchPeopleLoading: false,
   isNextPage: false,
+  selectedPeople: {},
 };
 
 export const peopleSlice = createSlice({
@@ -48,6 +54,18 @@ export const peopleSlice = createSlice({
     setIsNextPage: (state, action: { payload: boolean }) => {
       state.isNextPage = action.payload;
     },
+    setSelectedPerson: (
+      state,
+      action: {
+        payload: { id: number; isSelected: boolean; data: PersonWithoutUrl };
+      }
+    ) => {
+      const { id, isSelected, data } = action.payload;
+      state.selectedPeople[id] = {
+        isSelected,
+        data,
+      };
+    },
   },
 });
 
@@ -59,6 +77,7 @@ export const {
   setSearchTerm,
   setIsFetchPeopleLoading,
   setIsNextPage,
+  setSelectedPerson,
 } = peopleSlice.actions;
 
 export const selectCurrentCard = (state: RootState) => state.people.currentCard;
@@ -69,5 +88,7 @@ export const selectResults = (state: RootState) => state.people.results;
 export const selectIsFetchPeopleLoading = (state: RootState) =>
   state.people.isFetchPeopleLoading;
 export const selectIsNextPage = (state: RootState) => state.people.isNextPage;
+export const selectIsPersonSelected = (state: RootState, id: number) =>
+  state.people.selectedPeople[id];
 
 export default peopleSlice.reducer;
