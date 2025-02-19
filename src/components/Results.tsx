@@ -9,7 +9,6 @@ import {
   resetCurrentCard,
   selectIsFetchPeopleLoading,
   selectIsNextPage,
-  selectResults,
   setCurrentCard,
   setIsFetchPersonByIdLoading,
 } from '../features/people/peopleSlice';
@@ -18,12 +17,10 @@ import { RootState } from '@/app/store';
 export default function Results() {
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
-  const results = useSelector((state: RootState) => selectResults(state));
   const isNextPage = useSelector((state: RootState) => selectIsNextPage(state));
   const isFetchPeopleLoading = useSelector((state: RootState) =>
     selectIsFetchPeopleLoading(state)
   );
-  // const { currentPage } = props;
   const id = searchParams.get('id');
   const currentPage = Number(searchParams.get('page')) || 1;
 
@@ -72,7 +69,7 @@ export default function Results() {
       ) : (
         <div>
           <h2>Results</h2>
-          <CardList results={results} />
+          <CardList />
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage <= 1}
