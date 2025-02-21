@@ -61,10 +61,21 @@ export const peopleSlice = createSlice({
       }
     ) => {
       const { id, isSelected, data } = action.payload;
-      state.selectedPeople[id] = {
-        isSelected,
-        data,
+      state.selectedPeople = {
+        ...state.selectedPeople,
+        [id]: { isSelected, data },
       };
+    },
+    unselectPerson: (state, action: { payload: { id: number } }) => {
+      if (action.payload.id in state.selectedPeople) {
+        const { [action.payload.id]: _removed, ...rest } = state.selectedPeople;
+        state.selectedPeople = rest;
+        return;
+        console.log(_removed);
+      }
+    },
+    unselectAllPeople: (state) => {
+      state.selectedPeople = {};
     },
   },
 });
@@ -78,6 +89,8 @@ export const {
   setIsFetchPeopleLoading,
   setIsNextPage,
   setSelectedPerson,
+  unselectPerson,
+  unselectAllPeople,
 } = peopleSlice.actions;
 
 export const selectCurrentCard = (state: RootState) => state.people.currentCard;
@@ -90,5 +103,9 @@ export const selectIsFetchPeopleLoading = (state: RootState) =>
 export const selectIsNextPage = (state: RootState) => state.people.isNextPage;
 export const selectIsPersonSelected = (state: RootState, id: number) =>
   state.people.selectedPeople[id];
+export const selectCountOfSelectedPeople = (state: RootState) =>
+  Object.keys(state.people.selectedPeople).length;
+export const selectSelectedPeople = (state: RootState) =>
+  state.people.selectedPeople;
 
 export default peopleSlice.reducer;
