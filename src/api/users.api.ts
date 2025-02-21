@@ -1,3 +1,4 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import BadRequestError from '../common/errors/BadRequestError';
 import ForbiddenError from '../common/errors/ForbiddenError';
 import NotFoundError from '../common/errors/NotFoundError';
@@ -61,3 +62,24 @@ export const fetchPersonById = async (
 
   return res;
 };
+
+export const peopleApi = createApi({
+  reducerPath: 'peopleApi',
+  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+  endpoints: (builder) => ({
+    getPeople: builder.query<
+      FetchPeopleResponse,
+      { search?: string; page?: number }
+    >({
+      query: ({ search, page }) => ({
+        url: '/',
+        params: { search, page },
+      }),
+    }),
+    getPersonById: builder.query<PersonWithoutUrl, string>({
+      query: (id: string) => `/${id}`,
+    }),
+  }),
+});
+
+export const { useGetPeopleQuery, useGetPersonByIdQuery } = peopleApi;
