@@ -12,6 +12,7 @@ import {
 } from '../features/people/peopleSlice';
 import { RootState } from '@/app/store';
 import ErrorButton from '../components/ErrorButton';
+import DownloadArea from '../components/DownloadArea';
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ export default function SearchPage() {
       <Controls />
       <Results />
       <ErrorButton />
+      <DownloadArea />
     </div>
   );
 }
