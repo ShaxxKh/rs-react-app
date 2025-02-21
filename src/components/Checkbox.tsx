@@ -1,6 +1,6 @@
 export default function Checkbox(props: {
   isChecked: boolean;
-  handleOnCheckboxChange: () => void;
+  handleOnCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   const { isChecked, handleOnCheckboxChange } = props;
 
@@ -9,8 +9,7 @@ export default function Checkbox(props: {
       <input
         type="checkbox"
         name="select"
-        checked={isChecked}
-        defaultChecked={isChecked}
+        checked={isChecked || false}
         onChange={handleOnCheckboxChange}
       />
     </label>

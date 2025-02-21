@@ -6,6 +6,7 @@ import { RootState } from '@/app/store';
 import {
   selectIsPersonSelected,
   setSelectedPerson,
+  unselectPerson,
 } from '../features/people/peopleSlice';
 import Checkbox from './Checkbox';
 
@@ -25,14 +26,20 @@ export default function Card(props: { data: Person }) {
     setCardId(Number(id));
   }, [searchParams, url]);
 
-  const handleOnCheckboxChange = () => {
-    dispatch(
-      setSelectedPerson({
-        id: cardId,
-        isSelected: !person?.isSelected,
-        data: { name, birth_year, gender, hair_color, eye_color },
-      })
-    );
+  const handleOnCheckboxChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.checked) {
+      dispatch(
+        setSelectedPerson({
+          id: cardId,
+          isSelected: event.target.checked,
+          data: { name, birth_year, gender, hair_color, eye_color },
+        })
+      );
+    } else {
+      dispatch(unselectPerson({ id: cardId }));
+    }
   };
 
   return (
