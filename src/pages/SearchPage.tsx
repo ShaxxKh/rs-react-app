@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Results from '../components/Results';
-import { Person, useGetPeopleQuery } from '../api/users.api';
+import { useGetPeopleQuery } from '../api/users.api';
 import Controls from '../components/Controls';
 import { useSearchParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +11,7 @@ import {
   setResults,
 } from '../features/people/peopleSlice';
 import { RootState } from '@/app/store';
+import ErrorButton from '../components/ErrorButton';
 
 export default function SearchPage() {
   const dispatch = useDispatch();
@@ -39,13 +40,7 @@ export default function SearchPage() {
     <div className="search_page">
       <Controls />
       <Results />
-      <button
-        onClick={() => {
-          dispatch(setResults(undefined as Person[]));
-        }}
-      >
-        Error Button
-      </button>
+      <ErrorButton />
     </div>
   );
 }
