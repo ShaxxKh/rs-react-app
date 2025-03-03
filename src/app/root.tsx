@@ -1,12 +1,16 @@
-import '../index.css';
+'use client';
+
 import { store } from '@/appStore/store';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import ThemeContext, { ThemeType } from '@/context/ThemeContext';
-import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import { Provider } from 'react-redux';
 
-export default function App({ Component, pageProps }: AppProps) {
+export function RootClientComponent({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [theme, setTheme] = useState<ThemeType>('dark');
 
   return (
@@ -14,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <div className={`app ${theme}`}>
         <ErrorBoundary>
           <ThemeContext.Provider value={{ theme, setTheme }}>
-            <Component {...pageProps} />
+            {children}
           </ThemeContext.Provider>
         </ErrorBoundary>
       </div>

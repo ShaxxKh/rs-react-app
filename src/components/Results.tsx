@@ -13,7 +13,7 @@ import {
 } from '../features/people/peopleSlice';
 import { RootState } from '@/appStore/store';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function Results() {
   const dispatch = useDispatch();
@@ -23,8 +23,8 @@ export default function Results() {
   const isFetchPeopleLoading = useSelector((state: RootState) =>
     selectIsFetchPeopleLoading(state)
   );
-  const id = searchParams.get('id') || '';
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const id = searchParams?.get('id') || '';
+  const currentPage = Number(searchParams?.get('page')) || 1;
 
   const {
     data: currentCard,
@@ -60,7 +60,7 @@ export default function Results() {
   }, [id, dispatch, currentCard, error, isLoading, isFetching]);
 
   const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams?.toString());
     params.set('page', newPage.toString());
     router.push(`search?${params.toString()}`);
   };

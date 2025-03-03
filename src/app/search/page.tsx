@@ -1,24 +1,26 @@
+'use client';
+
 import { useEffect } from 'react';
-import Results from '../components/Results';
-import { useGetPeopleQuery } from '../api/users.api';
-import Controls from '../components/Controls';
+import Results from '../../components/Results';
+import { useGetPeopleQuery } from '../../api/users.api';
+import Controls from '../../components/Controls';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectSearchTerm,
   setIsFetchPeopleLoading,
   setIsNextPage,
   setResults,
-} from '../features/people/peopleSlice';
+} from '../../features/people/peopleSlice';
 import { RootState } from '@/appStore/store';
-import ErrorButton from '../components/ErrorButton';
-import DownloadArea from '../components/DownloadArea';
+import ErrorButton from '../../components/ErrorButton';
+import DownloadArea from '../../components/DownloadArea';
 import { useSearchParams } from 'next/navigation';
 
 export default function SearchPage() {
   const dispatch = useDispatch();
   const searchTerm = useSelector((state: RootState) => selectSearchTerm(state));
   const searchParams = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || undefined;
+  const currentPage = Number(searchParams?.get('page')) || undefined;
 
   const { data, isLoading, isFetching, error } = useGetPeopleQuery({
     search: searchTerm,

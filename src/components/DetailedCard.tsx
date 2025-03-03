@@ -7,7 +7,7 @@ import {
 } from '../features/people/peopleSlice';
 import { RootState } from '@/appStore/store';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export default function DetailedCard() {
   const dispatch = useDispatch();
@@ -21,10 +21,9 @@ export default function DetailedCard() {
   );
 
   const handleCloseButtonClick = () => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams?.toString());
     params.delete('id');
     dispatch(resetCurrentCard());
-
     router.push(`search?${params.toString()}`);
   };
 
