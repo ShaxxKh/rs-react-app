@@ -1,5 +1,5 @@
 import { CSVLink } from 'react-csv';
-import { RootState } from '@/app/store';
+import { RootState } from '@/appStore/store';
 import {
   selectCountOfSelectedPeople,
   selectSelectedPeople,

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import DetailedCard from '../../components/DetailedCard';
 import { renderWithRouter } from '../helpers';
-import { RootState } from '@/app/store';
+import { RootState } from '@/appStore/store';
 
 const mockStore = configureStore([]);
 const initialState: Partial<RootState> = {

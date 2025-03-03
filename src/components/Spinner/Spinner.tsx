@@ -1,10 +1,10 @@
-import './spinner.css';
+import styles from './spinner.module.css';
 
 export default function Spinner() {
   return (
     <>
       <div
-        className="spinner"
+        className={styles.spinner}
         style={{
           width: '32px',
           height: '32px',
@@ -15,7 +15,7 @@ export default function Spinner() {
         aria-label="loading"
         data-testid="spinner"
       ></div>
-      <span className="spinner-text">Loading...</span>
+      <span className={styles.spinnerText}>Loading...</span>
     </>
   );
 }

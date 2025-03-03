@@ -1,7 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouter } from '../helpers';
-import SearchPage from '../../pages/SearchPage';
+import SearchPage from '../../pages/search';
 import { fetchPeople } from '../../api/users.api';
 
 // Mock the API call

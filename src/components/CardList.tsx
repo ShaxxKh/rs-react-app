@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import Card from './Card';
-import { RootState } from '@/app/store';
+import { RootState } from '@/appStore/store';
 import { selectResults } from '../features/people/peopleSlice';
 
 export default function CardList() {

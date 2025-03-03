@@ -4,12 +4,13 @@ import { setSearchTerm } from '../../features/people/peopleSlice';
 
 export default function useSearchTermToLocalStorage() {
   const dispatch = useDispatch();
-  const [searchTerm, setSearchTermToLocalState] = useState(
-    localStorage.getItem('searchTerm') ?? ''
-  );
+
+  const [searchTerm, setSearchTermToLocalState] = useState('');
 
   useEffect(() => {
-    dispatch(setSearchTerm(searchTerm));
+    const searchTermFromLS = String(localStorage.getItem('searchTerm'));
+    setSearchTermToLocalState(searchTermFromLS);
+    dispatch(setSearchTerm(searchTermFromLS));
   }, [dispatch]);
 
   useEffect(() => {

@@ -1,19 +1,55 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     },
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "types": ["node", "jest"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+    "types": [
+      "node",
+      "jest"
+    ],
     "esModuleInterop": true,
     "noEmit": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true,
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "skipLibCheck": true,
+    "strict": false,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "strictNullChecks": true
   },
-
-  "include": ["src", "types"],
-  "exclude": ["node_modules", "build"],
+  "include": [
+    "src",
+    "types",
+    "./dist/types/**/*.ts",
+    "./next-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ],
   "buildOptions": {
     "outDir": "build"
   }

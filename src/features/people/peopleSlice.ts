@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { FetchPeopleResponse, PersonWithoutUrl } from '../../api/users.api';
-import { RootState } from '@/app/store';
+import { RootState } from '@/appStore/store';
 
 export type SelectedPeople = {
   [key: number]: { isSelected: boolean; data: PersonWithoutUrl };

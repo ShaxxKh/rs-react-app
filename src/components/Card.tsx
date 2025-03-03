@@ -1,8 +1,9 @@
-import { Link, useSearchParams } from 'react-router';
-import { Person } from '../api/users.api';
-import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/app/store';
+import { Person } from '../api/users.api';
+import { RootState } from '@/appStore/store';
 import {
   selectIsPersonSelected,
   setSelectedPerson,
@@ -11,8 +12,12 @@ import {
 import Checkbox from './Checkbox';
 
 export default function Card(props: { data: Person }) {
-  const [searchParams] = useSearchParams();
-  const [cardId, setCardId] = useState(null);
+  const searchParams = useSearchParams();
+  const params = useMemo(
+    () => new URLSearchParams(searchParams.toString()),
+    []
+  );
+  const [cardId, setCardId] = useState<number | null>(null);
   const dispatch = useDispatch();
   const { name, birth_year, gender, hair_color, eye_color, url } = props.data;
   const person = useSelector((state: RootState) =>
@@ -22,23 +27,25 @@ export default function Card(props: { data: Person }) {
   useEffect(() => {
     const urlSplitted = url.split('/');
     const id = urlSplitted[urlSplitted.length - 2];
-    searchParams.set('id', id);
+    params.set('id', id);
     setCardId(Number(id));
-  }, [searchParams, url]);
+  }, [params, url]);
 
   const handleOnCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (event.target.checked) {
-      dispatch(
-        setSelectedPerson({
-          id: cardId,
-          isSelected: event.target.checked,
-          data: { name, birth_year, gender, hair_color, eye_color },
-        })
-      );
-    } else {
-      dispatch(unselectPerson({ id: cardId }));
+    if (typeof cardId === 'number') {
+      if (event.target.checked) {
+        dispatch(
+          setSelectedPerson({
+            id: cardId,
+            isSelected: event.target.checked,
+            data: { name, birth_year, gender, hair_color, eye_color },
+          })
+        );
+      } else {
+        dispatch(unselectPerson({ id: cardId }));
+      }
     }
   };
 
@@ -48,7 +55,7 @@ export default function Card(props: { data: Person }) {
         isChecked={person?.isSelected}
         handleOnCheckboxChange={handleOnCheckboxChange}
       />
-      <Link to={{ search: searchParams.toString() }}>
+      <Link href={{ search: params.toString() }}>
         {name} - {birth_year} - {gender}
       </Link>
     </li>

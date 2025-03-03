@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router';
 import { useGetPersonByIdQuery } from '../api/users.api';
 import DetailedCard from './DetailedCard';
 import Spinner from './Spinner/Spinner';
@@ -12,16 +11,19 @@ import {
   setCurrentCard,
   setIsFetchPersonByIdLoading,
 } from '../features/people/peopleSlice';
-import { RootState } from '@/app/store';
+import { RootState } from '@/appStore/store';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 export default function Results() {
   const dispatch = useDispatch();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const isNextPage = useSelector((state: RootState) => selectIsNextPage(state));
   const isFetchPeopleLoading = useSelector((state: RootState) =>
     selectIsFetchPeopleLoading(state)
   );
-  const id = searchParams.get('id');
+  const id = searchParams.get('id') || '';
   const currentPage = Number(searchParams.get('page')) || 1;
 
   const {
@@ -58,8 +60,9 @@ export default function Results() {
   }, [id, dispatch, currentCard, error, isLoading, isFetching]);
 
   const handlePageChange = (newPage: number) => {
-    searchParams.set('page', newPage.toString());
-    setSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
+    params.set('page', newPage.toString());
+    router.push(`search?${params.toString()}`);
   };
 
   return (
